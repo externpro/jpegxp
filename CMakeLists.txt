@@ -14,6 +14,7 @@ endif()
 include_directories(
   lossy8
   lossy12
+  lossless
   )
 #######################################
 # library sources
@@ -41,9 +42,22 @@ set(internal_hdrs
   lossy12/xjdct.h
   lossy12/xjdhuff.h
   lossy12/xjpegint.h
+  lossless/jlossls.h
   )
 source_group(headers FILES ${internal_hdrs})
 list(APPEND ${lib_name}_libsrcs ${internal_hdrs})
+###################
+# lossless
+set(lossless_srcs
+  lossless/jcodec.c
+  lossless/jddiffct.c
+  lossless/jdlhuff.c
+  lossless/jdlossls.c
+  lossless/jdpred.c
+  lossless/jdscale.c
+  )
+source_group(lossless FILES ${lossless_srcs})
+list(APPEND ${lib_name}_libsrcs ${lossless_srcs})
 ###################
 # lossy12
 set(lossy12_srcs
