@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 3.0)
 project(jpegxp)
 include(flags OPTIONAL)
 set(lib_name jpegxp)
@@ -165,5 +165,11 @@ list(APPEND ${lib_name}_libsrcs ${lossy8_srcs})
 add_library(${lib_name} STATIC ${${lib_name}_libsrcs})
 #######################################
 # install
-install(TARGETS ${lib_name} DESTINATION lib${NUMBITS})
+install(TARGETS ${lib_name} EXPORT ${PROJECT_NAME}-targets
+  RUNTIME DESTINATION bin${NUMBITS}
+  LIBRARY DESTINATION lib${NUMBITS}
+  ARCHIVE DESTINATION lib${NUMBITS}
+  )
 install(FILES ${include_srcs} DESTINATION include/jpegxp)
+install(FILES usexp-${PROJECT_NAME}-config.cmake DESTINATION share/cmake)
+install(EXPORT ${PROJECT_NAME}-targets DESTINATION lib${NUMBITS}/cmake)
