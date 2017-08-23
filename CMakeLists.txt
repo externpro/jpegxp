@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(jpegxp)
 include(flags OPTIONAL)
-set(lib_name jpegxp)
+set(lib_name ${PROJECT_NAME})
 #######################################
 # preprocessor
 if(MSVC)
@@ -161,14 +161,22 @@ set(lossy8_srcs
 source_group(lossy8 FILES ${lossy8_srcs})
 list(APPEND ${lib_name}_libsrcs ${lossy8_srcs})
 #######################################
+# version
+if(DEFINED JPEGXP_VER)
+  set(ver _${JPEGXP_VER})
+  set(verDir /${PROJECT_NAME}${ver})
+endif()
+#######################################
 # library
 add_library(${lib_name} STATIC ${${lib_name}_libsrcs})
+set_target_properties(${lib_name} PROPERTIES OUTPUT_NAME ${lib_name}${ver})
 #######################################
 # install
-install(TARGETS ${lib_name} EXPORT ${PROJECT_NAME}-targets
+set(targetsFile ${PROJECT_NAME}${ver}-targets)
+install(TARGETS ${lib_name} EXPORT ${targetsFile}
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   )
-install(FILES ${include_srcs} DESTINATION include/jpegxp)
-install(EXPORT ${PROJECT_NAME}-targets DESTINATION lib/cmake)
+install(FILES ${include_srcs} DESTINATION include${verDir}/${PROJECT_NAME})
+install(EXPORT ${targetsFile} DESTINATION lib/cmake)
