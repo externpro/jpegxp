@@ -3,23 +3,6 @@ project(jpegxp)
 include(flags OPTIONAL)
 set(lib_name ${PROJECT_NAME})
 #######################################
-# preprocessor
-if(MSVC)
-  add_definitions(
-    -D_CRT_SECURE_NO_WARNINGS
-    )
-endif()
-#######################################
-# include directories
-include_directories(
-  lossy8
-  lossy12
-  lossless
-  )
-#######################################
-# library sources
-###################
-# header files
 set(include_srcs
   lossy8/jconfig.h
   lossy8/jerror.h
@@ -30,6 +13,7 @@ set(include_srcs
   )
 source_group(include FILES ${include_srcs})
 list(APPEND ${lib_name}_libsrcs ${include_srcs})
+###################
 set(internal_hdrs
   lossy8/jchuff.h
   lossy8/jdct.h
@@ -47,7 +31,6 @@ set(internal_hdrs
 source_group(headers FILES ${internal_hdrs})
 list(APPEND ${lib_name}_libsrcs ${internal_hdrs})
 ###################
-# lossless
 set(lossless_srcs
   lossless/jcodec.c
   lossless/jddiffct.c
@@ -59,7 +42,6 @@ set(lossless_srcs
 source_group(lossless FILES ${lossless_srcs})
 list(APPEND ${lib_name}_libsrcs ${lossless_srcs})
 ###################
-# lossy12
 set(lossy12_srcs
   lossy12/xjcapimin.c
   lossy12/xjcapistd.c
@@ -109,7 +91,6 @@ set(lossy12_srcs
 source_group(lossy12 FILES ${lossy12_srcs})
 list(APPEND ${lib_name}_libsrcs ${lossy12_srcs})
 ###################
-# lossy8
 set(lossy8_srcs
   lossy8/jcapimin.c
   lossy8/jcapistd.c
@@ -161,17 +142,20 @@ set(lossy8_srcs
 source_group(lossy8 FILES ${lossy8_srcs})
 list(APPEND ${lib_name}_libsrcs ${lossy8_srcs})
 #######################################
-# version
 if(DEFINED JPEGXP_VER)
   set(ver _${JPEGXP_VER})
   set(verDir /${PROJECT_NAME}${ver})
 endif()
 #######################################
-# library
 add_library(${lib_name} STATIC ${${lib_name}_libsrcs})
+target_include_directories(${lib_name} PUBLIC $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include${verDir}>
+  PRIVATE lossy8 lossy12 lossless
+  )
+if(MSVC)
+  target_compile_definitions(${lib_name} PRIVATE -D_CRT_SECURE_NO_WARNINGS)
+endif()
 set_target_properties(${lib_name} PROPERTIES OUTPUT_NAME ${lib_name}${ver})
 #######################################
-# install
 set(targetsFile ${PROJECT_NAME}${ver}-targets)
 install(TARGETS ${lib_name} EXPORT ${targetsFile}
   RUNTIME DESTINATION bin
@@ -179,4 +163,7 @@ install(TARGETS ${lib_name} EXPORT ${targetsFile}
   ARCHIVE DESTINATION lib
   )
 install(FILES ${include_srcs} DESTINATION include${verDir}/${PROJECT_NAME})
-install(EXPORT ${targetsFile} DESTINATION lib/cmake)
+if(DEFINED XP_NAMESPACE)
+  set(nameSpace NAMESPACE ${XP_NAMESPACE}::)
+endif()
+install(EXPORT ${targetsFile} DESTINATION lib/cmake ${nameSpace})
