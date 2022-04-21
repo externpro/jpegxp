@@ -1,9 +1,9 @@
 [submodule "lossy8"]
 	path = lossy8
-	url = git://github.com/smanders/libjpeg.git
+	url = https://github.com/smanders/libjpeg.git
 [submodule "lossy12"]
 	path = lossy12
-	url = git://github.com/smanders/libjpeg.git
+	url = https://github.com/smanders/libjpeg.git
 [submodule "lossless"]
 	path = lossless
-	url = git://github.com/smanders/libjpeg.git
+	url = https://github.com/smanders/libjpeg.git
