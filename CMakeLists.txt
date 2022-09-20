@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(jpegxp)
+include(GNUInstallDirs)
 include(flags OPTIONAL)
 set(lib_name ${PROJECT_NAME})
 #######################################
@@ -142,28 +143,25 @@ set(lossy8_srcs
 source_group(lossy8 FILES ${lossy8_srcs})
 list(APPEND ${lib_name}_libsrcs ${lossy8_srcs})
 #######################################
-if(DEFINED JPEGXP_VER)
-  set(ver _${JPEGXP_VER})
-  set(verDir /${PROJECT_NAME}${ver})
-endif()
-#######################################
 add_library(${lib_name} STATIC ${${lib_name}_libsrcs})
-target_include_directories(${lib_name} PUBLIC $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include${verDir}>
+target_include_directories(${lib_name} PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   PRIVATE lossy8 lossy12 lossless
   )
 if(MSVC)
   target_compile_definitions(${lib_name} PRIVATE -D_CRT_SECURE_NO_WARNINGS)
 endif()
-set_target_properties(${lib_name} PROPERTIES OUTPUT_NAME ${lib_name}${ver})
 #######################################
-set(targetsFile ${PROJECT_NAME}${ver}-targets)
+set(targetsFile ${PROJECT_NAME}-targets)
 install(TARGETS ${lib_name} EXPORT ${targetsFile}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   )
-install(FILES ${include_srcs} DESTINATION include${verDir}/${PROJECT_NAME})
+install(FILES ${include_srcs} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 if(DEFINED XP_NAMESPACE)
   set(nameSpace NAMESPACE ${XP_NAMESPACE}::)
 endif()
-install(EXPORT ${targetsFile} DESTINATION lib/cmake ${nameSpace})
+if(NOT DEFINED XP_INSTALL_CMAKEDIR)
+  set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
+endif()
+install(EXPORT ${targetsFile} DESTINATION ${XP_INSTALL_CMAKEDIR} ${nameSpace})
