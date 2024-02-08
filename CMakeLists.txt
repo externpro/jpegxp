@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.20)
 project(jpegxp)
 include(GNUInstallDirs)
 include(flags OPTIONAL)
