@@ -7,3 +7,6 @@
 [submodule "lossless"]
 	path = lossless
 	url = https://github.com/externpro/libjpeg.git
+[submodule ".devcontainer"]
+	path = .devcontainer
+	url = https://github.com/externpro/externpro
