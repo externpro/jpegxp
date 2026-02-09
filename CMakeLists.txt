@@ -160,8 +160,7 @@ if(DEFINED XP_NAMESPACE)
     LICENSE "[IJG](https://github.com/externpro/libjpeg/blob/upstream/README 'Independent JPEG Group License, see LEGAL ISSUES in README')"
     )
   set(nameSpace NAMESPACE ${XP_NAMESPACE}::)
-  set(CMAKE_INSTALL_CMAKEDIR ${XP_INSTALL_CMAKEDIR})
-elseif(NOT DEFINED XP_INSTALL_CMAKEDIR)
+elseif(NOT DEFINED CMAKE_INSTALL_CMAKEDIR)
   set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
 endif()
 install(TARGETS ${lib_name} EXPORT ${targetsFile}
