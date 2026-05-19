@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.31)
-set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
+cmake_minimum_required(VERSION 4.3)
 project(jpegxp)
 set(lib_name ${PROJECT_NAME})
 #######################################
@@ -151,15 +150,14 @@ if(MSVC)
 endif()
 #######################################
 set(targetsFile ${PROJECT_NAME}-targets)
-if(DEFINED XP_NAMESPACE)
-  xpExternPackage(NAMESPACE ${XP_NAMESPACE}
-    TARGETS_FILE ${targetsFile} LIBRARIES ${lib_name}
+if(COMMAND xpExternPackage)
+  xpExternPackage(TARGETS_FILE ${targetsFile}
+    LIBRARIES ${lib_name} DEFAULT_TARGETS ${lib_name}
     BASE jxp.240125 XPDIFF "intro"
     WEB "http://www.ijg.org/"
     DESC "JPEG codec with mods for Lossless, 12-bit lossy (XP)"
     LICENSE "[IJG](https://github.com/externpro/libjpeg/blob/upstream/README 'Independent JPEG Group License, see LEGAL ISSUES in README')"
     )
-  set(nameSpace NAMESPACE ${XP_NAMESPACE}::)
 elseif(NOT DEFINED CMAKE_INSTALL_CMAKEDIR)
   set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
 endif()
@@ -169,4 +167,4 @@ install(TARGETS ${lib_name} EXPORT ${targetsFile}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   )
 install(FILES ${include_srcs} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
-install(EXPORT ${targetsFile} DESTINATION ${CMAKE_INSTALL_CMAKEDIR} ${nameSpace})
+install(EXPORT ${targetsFile} DESTINATION ${CMAKE_INSTALL_CMAKEDIR} NAMESPACE ${PROJECT_NAME}::)
